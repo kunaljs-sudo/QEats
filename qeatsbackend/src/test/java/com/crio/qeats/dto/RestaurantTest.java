@@ -12,6 +12,7 @@ import java.io.IOException;
 import org.json.JSONException;
 import org.junit.jupiter.api.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
+import org.skyscreamer.jsonassert.JSONCompareMode;
 
 // TODO: CRIO_TASK_MODULE_SERIALIZATION - Pass tests in RestaurantTest.
 class RestaurantTest {
