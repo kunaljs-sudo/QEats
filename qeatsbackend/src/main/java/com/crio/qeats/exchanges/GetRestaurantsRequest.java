@@ -13,6 +13,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 // TODO: CRIO_TASK_MODULE_RESTAURANTSAPI
@@ -28,14 +29,16 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @AllArgsConstructor
 public class GetRestaurantsRequest {
 
+    @NotNull
     @NonNull
-    @Max(value = 90)
-    @Min(value = -90)
+    @Max(90)
+    @Min(-90)
     private Double latitude;
 
+    @NotNull
     @NonNull
-    @Max(value = 180)
-    @Min(value = -180)
+    @Max(180)
+    @Min(-180)
     private Double longitude;
 
     @JsonProperty(required = false)
