@@ -104,6 +104,12 @@ class RestaurantServiceTest {
     assertFalse(false);
   }
 
+  @Test
+  void peakHourServingRadiusOf3KmsAt9Pm() throws IOException {
+    List<Restaurant> restaurants = loadRestaurantsDuringPeakHours();
+    assertEquals(getServingRadius(restaurants, LocalTime.of(21, 0)), "3.0");
+  }
+
 
 
   private List<Restaurant> loadRestaurantsDuringNormalHours() throws IOException {

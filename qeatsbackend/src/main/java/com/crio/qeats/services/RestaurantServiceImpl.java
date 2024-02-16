@@ -41,12 +41,12 @@ public class RestaurantServiceImpl implements RestaurantService {
       GetRestaurantsRequest getRestaurantsRequest, LocalTime currentTime) {
 
     int h = currentTime.getHour();
-    int m = currentTime.getHour();
-
+    int m = currentTime.getMinute();
+    
     List<Restaurant> restaurants;
 
     if ((h >= 8 && h <= 9) || (h == 10 && m == 0) || (h == 13) || (h == 14 && m == 0)
-        || (h >= 19 && h <= 20) || (h == 21 && m == 0)) {
+        || (h >= 19 && h < 21) || (h == 21 && m == 0)) {
       restaurants =
           restaurantRepositoryService.findAllRestaurantsCloseBy(getRestaurantsRequest.getLatitude(),
               getRestaurantsRequest.getLongitude(), currentTime, peakHoursServingRadiusInKms);
