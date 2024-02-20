@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright (c) Crio.Do 2019. All rights reserved
+ * * Copyright (c) Crio.Do 2019. All rights reserved
  *
  */
 
@@ -35,6 +35,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.ModelMap;
 
 
 @Service
@@ -42,9 +43,11 @@ public class RestaurantRepositoryServiceImpl implements RestaurantRepositoryServ
 
 
 
-
   @Autowired
   private MongoTemplate mongoTemplate;
+
+  @Autowired
+  private RestaurantRepository restaurantRepository;
 
   @Autowired
   private Provider<ModelMapper> modelMapperProvider;
@@ -61,23 +64,29 @@ public class RestaurantRepositoryServiceImpl implements RestaurantRepositoryServ
   // 1. Implement findAllRestaurantsCloseby.
   // 2. Remember to keep the precision of GeoHash in mind while using it as a key.
   // Check RestaurantRepositoryService.java file for the interface contract.
-  public List<Restaurant> findAllRestaurantsCloseBy(Double latitude,
-      Double longitude, LocalTime currentTime, Double servingRadiusInKms) {
-
-    List<Restaurant> restaurants = null;
+  public List<Restaurant> findAllRestaurantsCloseBy(Double latitude, Double longitude,
+      LocalTime currentTime, Double servingRadiusInKms) {
 
 
-      //CHECKSTYLE:OFF
-      //CHECKSTYLE:ON
+    ModelMapper modelMapper = modelMapperProvider.get();
+    List<RestaurantEntity> restaurantEntities = restaurantRepository.findAll();
+
+    List<Restaurant> restaurants = new ArrayList<>();
+    for (RestaurantEntity restaurantEntity : restaurantEntities) {
+      if (isOpenNow(currentTime, restaurantEntity) && isRestaurantCloseByAndOpen(restaurantEntity,
+          currentTime, latitude, longitude, servingRadiusInKms)) {
+        restaurants.add(modelMapper.map(restaurantEntity, Restaurant.class));
+      }
+    }
+
+
+
+    // CHECKSTYLE:OFF
+    // CHECKSTYLE:ON
 
 
     return restaurants;
   }
-
-
-
-
-
 
 
 
@@ -88,14 +97,14 @@ public class RestaurantRepositoryServiceImpl implements RestaurantRepositoryServ
 
   /**
    * Utility method to check if a restaurant is within the serving radius at a given time.
+   * 
    * @return boolean True if restaurant falls within serving radius and is open, false otherwise
    */
   private boolean isRestaurantCloseByAndOpen(RestaurantEntity restaurantEntity,
       LocalTime currentTime, Double latitude, Double longitude, Double servingRadiusInKms) {
     if (isOpenNow(currentTime, restaurantEntity)) {
-      return GeoUtils.findDistanceInKm(latitude, longitude,
-          restaurantEntity.getLatitude(), restaurantEntity.getLongitude())
-          < servingRadiusInKms;
+      return GeoUtils.findDistanceInKm(latitude, longitude, restaurantEntity.getLatitude(),
+          restaurantEntity.getLongitude()) < servingRadiusInKms;
     }
 
     return false;
