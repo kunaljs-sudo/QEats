@@ -6,8 +6,9 @@
 
 package com.crio.qeats.exchanges;
 
-import java.util.List;
+
 import com.crio.qeats.dto.Restaurant;
+import java.util.List;
 
 // TODO: CRIO_TASK_MODULE_RESTAURANTSAPI
 // Implement GetRestaurantsResponse.
@@ -45,28 +46,27 @@ import com.crio.qeats.dto.Restaurant;
 // ]
 
 public class GetRestaurantsResponse {
-    public List<Restaurant> restaurants;
+	public List<Restaurant> restaurants;
 
-    public GetRestaurantsResponse() {}
+	public GetRestaurantsResponse() {}
 
-    public GetRestaurantsResponse(List<Restaurant> restaurants) {
-        this.restaurants = restaurants;
-    }
+	public GetRestaurantsResponse(List<Restaurant> restaurants) {
+		this.restaurants = restaurants;
+	}
 
-    public List<Restaurant> getRestaurants() {
-        return restaurants;
-    }
+	public List<Restaurant> getRestaurants() {
+		return restaurants;
+	}
 
-    public void setRestaurants(List<Restaurant> restaurants) {
-        this.restaurants = restaurants;
-    }
+	public void setRestaurants(List<Restaurant> restaurants) {
+		this.restaurants = restaurants;
+	}
 
-    @Override
-    public String toString() {
-        return "GetRestaurantsResponse [restaurants=" + restaurants + "]";
-    }
+	@Override
+	public String toString() {
+		return "GetRestaurantsResponse [restaurants=" + restaurants + "]";
+	}
 
-    
 
 
 }
