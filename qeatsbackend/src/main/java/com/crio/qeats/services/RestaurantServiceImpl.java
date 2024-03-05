@@ -21,39 +21,44 @@ import org.springframework.stereotype.Service;
 @Log4j2
 public class RestaurantServiceImpl implements RestaurantService {
 
-  private final Double peakHoursServingRadiusInKms = 3.0;
-  private final Double normalHoursServingRadiusInKms = 5.0;
-  @Autowired
-  private RestaurantRepositoryService restaurantRepositoryService;
+	private final Double peakHoursServingRadiusInKms = 3.0;
+	private final Double normalHoursServingRadiusInKms = 5.0;
+	@Autowired
+	private RestaurantRepositoryService restaurantRepositoryService;
 
 
-  // TODO: CRIO_TASK_MODULE_RESTAURANTSAPI - Implement findAllRestaurantsCloseby.
-  // Check RestaurantService.java file for the interface contract.
-  @Override
-  public GetRestaurantsResponse findAllRestaurantsCloseBy(
-      GetRestaurantsRequest getRestaurantsRequest, LocalTime currentTime) {
+	// TODO: CRIO_TASK_MODULE_RESTAURANTSAPI - Implement findAllRestaurantsCloseby.
+	// Check RestaurantService.java file for the interface contract.
+	@Override
+	public GetRestaurantsResponse findAllRestaurantsCloseBy(
+			GetRestaurantsRequest getRestaurantsRequest, LocalTime currentTime) {
 
-    int h = currentTime.getHour();
-    int m = currentTime.getMinute();
-    
-    List<Restaurant> restaurants;
+		int h = currentTime.getHour();
+		int m = currentTime.getMinute();
 
-    if ((h >= 8 && h <= 9) || (h == 10 && m == 0) || (h == 13) || (h == 14 && m == 0)
-        || (h >= 19 && h < 21) || (h == 21 && m == 0)) {
-      restaurants =
-          restaurantRepositoryService.findAllRestaurantsCloseBy(getRestaurantsRequest.getLatitude(),
-              getRestaurantsRequest.getLongitude(), currentTime, peakHoursServingRadiusInKms);
-    } else {
-      restaurants =
-          restaurantRepositoryService.findAllRestaurantsCloseBy(getRestaurantsRequest.getLatitude(),
-              getRestaurantsRequest.getLongitude(), currentTime, normalHoursServingRadiusInKms);
-    }
+		List<Restaurant> restaurants;
 
-    GetRestaurantsResponse getRestaurantsResponse = new GetRestaurantsResponse(restaurants);
-    log.info(getRestaurantsResponse);
+		if ((h >= 8 && h <= 9) || (h == 10 && m == 0) || (h == 13) || (h == 14 && m == 0)
+				|| (h >= 19 && h < 21) || (h == 21 && m == 0)) {
+			restaurants =
+					restaurantRepositoryService.findAllRestaurantsCloseBy(getRestaurantsRequest.getLatitude(),
+							getRestaurantsRequest.getLongitude(), currentTime, peakHoursServingRadiusInKms);
+		} else {
+			restaurants =
+					restaurantRepositoryService.findAllRestaurantsCloseBy(getRestaurantsRequest.getLatitude(),
+							getRestaurantsRequest.getLongitude(), currentTime, normalHoursServingRadiusInKms);
+		}
 
-    return getRestaurantsResponse;
-  }
+		for (Restaurant restaurant : restaurants) {
+			String sanitizedName = restaurant.getName().replaceAll("[Â©éí]", "e");
+			restaurant.setName(sanitizedName);
+		}
+
+		GetRestaurantsResponse getRestaurantsResponse = new GetRestaurantsResponse(restaurants);
+		log.info(getRestaurantsResponse);
+
+		return getRestaurantsResponse;
+	}
 
 
 }
