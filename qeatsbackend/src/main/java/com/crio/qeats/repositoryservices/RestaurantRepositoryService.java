@@ -27,6 +27,7 @@ public interface RestaurantRepositoryService {
    */
   List<Restaurant> findAllRestaurantsCloseBy(Double latitude, Double longitude,
       LocalTime currentTime, Double servingRadiusInKms);
+      
 
 }
 
