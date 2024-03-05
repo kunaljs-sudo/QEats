@@ -6,9 +6,6 @@
 
 package com.crio.qeats.exchanges;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import java.util.List;
 import com.crio.qeats.dto.Restaurant;
 
@@ -46,11 +43,32 @@ import com.crio.qeats.dto.Restaurant;
 // ]
 // }
 // ]
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
+
 public class GetRestaurantsResponse {
     public List<Restaurant> restaurants;
+
+    public GetRestaurantsResponse() {}
+
+    public GetRestaurantsResponse(List<Restaurant> restaurants) {
+        this.restaurants = restaurants;
+    }
+
+    public List<Restaurant> getRestaurants() {
+        return restaurants;
+    }
+
+    public void setRestaurants(List<Restaurant> restaurants) {
+        this.restaurants = restaurants;
+    }
+
+    @Override
+    public String toString() {
+        return "GetRestaurantsResponse [restaurants=" + restaurants + "]";
+    }
+
+    
+
+
 }
 
 // }
