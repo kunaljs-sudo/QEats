@@ -9,14 +9,12 @@
 
     <File append="true"
       fileName="${env:HOME}/.gradle/daemon/runlogs/qeats_analysis_app.log"
-
       ignoreExceptions="false"
       name="LogFileAppender">
       <JsonLayout compact="true" eventEol="true" includeStacktrace="true">
         <KeyValuePair key="runId" value="$${ctx:runId}"/>
       </JsonLayout>
     </File>
-
   </Appenders>
   <Loggers>
     <Root level="WARN">
