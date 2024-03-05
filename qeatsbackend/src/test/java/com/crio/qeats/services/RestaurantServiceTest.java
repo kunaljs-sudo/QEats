@@ -49,21 +49,21 @@ import org.springframework.test.context.ActiveProfiles;
 @ActiveProfiles("test")
 class RestaurantServiceTest {
 
-  private static final String FIXTURES = "fixtures/exchanges";
-  @InjectMocks
-  private RestaurantServiceImpl restaurantService;
-  @MockBean
-  private RestaurantRepositoryService restaurantRepositoryServiceMock;
-  private ObjectMapper objectMapper;
+	private static final String FIXTURES = "fixtures/exchanges";
+	@InjectMocks
+	private RestaurantServiceImpl restaurantService;
+	@MockBean
+	private RestaurantRepositoryService restaurantRepositoryServiceMock;
+	private ObjectMapper objectMapper;
 
-  @BeforeEach
-  void setup() {
-    MockitoAnnotations.initMocks(this);
+	@BeforeEach
+	void setup() {
+		MockitoAnnotations.initMocks(this);
 
-    objectMapper = new ObjectMapper();
-  }
+		objectMapper = new ObjectMapper();
+	}
 
-  private String getServingRadius(List<Restaurant> restaurants, LocalTime timeOfService) {
+	private String getServingRadius(List<Restaurant> restaurants, LocalTime timeOfService) {
     when(restaurantRepositoryServiceMock.findAllRestaurantsCloseBy(any(Double.class),
         any(Double.class), any(LocalTime.class), any(Double.class))).thenReturn(restaurants);
 
@@ -81,51 +81,51 @@ class RestaurantServiceTest {
     return servingRadiusInKms.getValue().toString();
   }
 
-  @Test
-  void peakHourServingRadiusOf3KmsAt7Pm() throws IOException {
-    assertEquals(getServingRadius(loadRestaurantsDuringPeakHours(), LocalTime.of(19, 0)), "3.0");
-  }
+	@Test
+	void peakHourServingRadiusOf3KmsAt7Pm() throws IOException {
+		assertEquals(getServingRadius(loadRestaurantsDuringPeakHours(), LocalTime.of(19, 0)), "3.0");
+	}
 
 
-  @Test
-  void normalHourServingRadiusIs5Kms() throws IOException {
+	@Test
+	void normalHourServingRadiusIs5Kms() throws IOException {
 
-    // TODO: CRIO_TASK_MODULE_RESTAURANTSAPI
-    // We must ensure the API retrieves only restaurants that are closeby and are open
-    // In short, we need to test:
-    // 1. If the mocked service methods are being called
-    // 2. If the expected restaurants are being returned
-    // HINT: Use the `loadRestaurantsDuringNormalHours` utility method to speed things up
+		// TODO: CRIO_TASK_MODULE_RESTAURANTSAPI
+		// We must ensure the API retrieves only restaurants that are closeby and are open
+		// In short, we need to test:
+		// 1. If the mocked service methods are being called
+		// 2. If the expected restaurants are being returned
+		// HINT: Use the `loadRestaurantsDuringNormalHours` utility method to speed things up
 
-    List<Restaurant> restaurants = loadRestaurantsDuringNormalHours();
-    assertEquals(getServingRadius(restaurants, LocalTime.of(12, 12)), "5.0");
-    assertFalse(false);
-  }
+		List<Restaurant> restaurants = loadRestaurantsDuringNormalHours();
+		assertEquals(getServingRadius(restaurants, LocalTime.of(12, 12)), "5.0");
+		assertFalse(false);
+	}
 
-  @Test
-  void peakHourServingRadiusOf3KmsAt9Pm() throws IOException {
-    List<Restaurant> restaurants = loadRestaurantsDuringPeakHours();
-    assertEquals(getServingRadius(restaurants, LocalTime.of(21, 0)), "3.0");
-  }
+	@Test
+	void peakHourServingRadiusOf3KmsAt9Pm() throws IOException {
+		List<Restaurant> restaurants = loadRestaurantsDuringPeakHours();
+		assertEquals(getServingRadius(restaurants, LocalTime.of(21, 0)), "3.0");
+	}
 
 
 
-  private List<Restaurant> loadRestaurantsDuringNormalHours() throws IOException {
-    String fixture = FixtureHelpers.fixture(FIXTURES + "/normal_hours_list_of_restaurants.json");
+	private List<Restaurant> loadRestaurantsDuringNormalHours() throws IOException {
+		String fixture = FixtureHelpers.fixture(FIXTURES + "/normal_hours_list_of_restaurants.json");
 
-    return objectMapper.readValue(fixture, new TypeReference<List<Restaurant>>() {});
-  }
+		return objectMapper.readValue(fixture, new TypeReference<List<Restaurant>>() {});
+	}
 
-  private List<Restaurant> loadRestaurantsSearchedByAttributes() throws IOException {
-    String fixture =
-        FixtureHelpers.fixture(FIXTURES + "/list_restaurants_searchedby_attributes.json");
+	private List<Restaurant> loadRestaurantsSearchedByAttributes() throws IOException {
+		String fixture =
+				FixtureHelpers.fixture(FIXTURES + "/list_restaurants_searchedby_attributes.json");
 
-    return objectMapper.readValue(fixture, new TypeReference<List<Restaurant>>() {});
-  }
+		return objectMapper.readValue(fixture, new TypeReference<List<Restaurant>>() {});
+	}
 
-  private List<Restaurant> loadRestaurantsDuringPeakHours() throws IOException {
-    String fixture = FixtureHelpers.fixture(FIXTURES + "/peak_hours_list_of_restaurants.json");
+	private List<Restaurant> loadRestaurantsDuringPeakHours() throws IOException {
+		String fixture = FixtureHelpers.fixture(FIXTURES + "/peak_hours_list_of_restaurants.json");
 
-    return objectMapper.readValue(fixture, new TypeReference<List<Restaurant>>() {});
-  }
+		return objectMapper.readValue(fixture, new TypeReference<List<Restaurant>>() {});
+	}
 }
