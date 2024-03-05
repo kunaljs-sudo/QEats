@@ -8,6 +8,7 @@ package com.crio.qeats.exchanges;
 
 
 import com.crio.qeats.dto.Restaurant;
+import java.io.Serializable;
 import java.util.List;
 
 // TODO: CRIO_TASK_MODULE_RESTAURANTSAPI
@@ -45,7 +46,7 @@ import java.util.List;
 // }
 // ]
 
-public class GetRestaurantsResponse {
+public class GetRestaurantsResponse implements Serializable{
 	public List<Restaurant> restaurants;
 
 	public GetRestaurantsResponse() {}

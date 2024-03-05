@@ -15,6 +15,7 @@ import com.crio.qeats.exchanges.GetRestaurantsRequest;
 import com.crio.qeats.exchanges.GetRestaurantsResponse;
 import com.crio.qeats.repositoryservices.RestaurantRepositoryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -30,6 +31,7 @@ public class RestaurantServiceImpl implements RestaurantService {
 	// TODO: CRIO_TASK_MODULE_RESTAURANTSAPI - Implement findAllRestaurantsCloseby.
 	// Check RestaurantService.java file for the interface contract.
 	@Override
+	@Cacheable("findAllRestaurantsCloseBy")
 	public GetRestaurantsResponse findAllRestaurantsCloseBy(
 			GetRestaurantsRequest getRestaurantsRequest, LocalTime currentTime) {
 

@@ -6,6 +6,7 @@
 
 package com.crio.qeats.models;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import javax.validation.constraints.NotNull;
@@ -15,7 +16,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 // Java class that maps to Mongo collection.
 
 @Document(collection = "restaurants")
-public class RestaurantEntity {
+public class RestaurantEntity implements Serializable{
 
   @Id
   private String id;

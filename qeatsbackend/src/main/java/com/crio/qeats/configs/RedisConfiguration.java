@@ -1,16 +1,25 @@
 
 package com.crio.qeats.configs;
 
+import redis.clients.jedis.JedisPool;
+import redis.clients.jedis.JedisPoolConfig;
 import java.time.Duration;
 import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.JedisPool;
-import redis.clients.jedis.JedisPoolConfig;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.cache.RedisCacheConfiguration;
+import org.springframework.data.redis.cache.RedisCacheManager;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
+import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
+import org.springframework.data.redis.serializer.RedisSerializationContext;
 
 
-@Component
+@Configuration
+@EnableCaching
 public class RedisConfiguration {
 
   // TODO: CRIO_TASK_MODULE_REDIS
@@ -28,10 +37,16 @@ public class RedisConfiguration {
   public static final String QUEUE_NAME = "rabbitmq-queue";
   public static final String ROUTING_KEY = "qeats.postorder";
 
-
+  @Value("${spring.redis.port}")
   private int redisPort;
   private JedisPool jedisPool;
 
+  public RedisConfiguration() {}
+
+  // Constructor for dependency injection
+  public RedisConfiguration(int redisPort) {
+    this.redisPort = redisPort;
+  }
 
   @Value("${spring.redis.port}")
   public void setRedisPort(int port) {
@@ -40,29 +55,81 @@ public class RedisConfiguration {
   }
 
   /**
-   * Initializes the cache to be used in the code.
-   * TIP: Look in the direction of `JedisPool`.
+   * Initializes the cache to be used in the code. TIP: Look in the direction of `JedisPool`.
    */
   @PostConstruct
   public void initCache() {
+    final JedisPoolConfig poolConfig = buildPoolConfig();
+    try {
+      jedisPool = new JedisPool(poolConfig, redisHost, redisPort);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+
   }
 
 
   /**
-   * Checks is cache is intiailized and available.
-   * TIP: This would generally mean checking via {@link JedisPool}
+   * Checks is cache is intiailized and available. TIP: This would generally mean checking via
+   * {@link JedisPool}
+   * 
    * @return true / false if cache is available or not.
    */
   public boolean isCacheAvailable() {
-
-     return false;
+    return jedisPool != null && !jedisPool.isClosed();
   }
 
   /**
-   * Destroy the cache.
-   * TIP: This is useful if cache is stale or while performing tests.
+   * Destroy the cache. TIP: This is useful if cache is stale or while performing tests.
    */
+
   public void destroyCache() {
+    if (jedisPool != null) {
+      jedisPool.getResource().flushAll();
+      jedisPool.destroy();
+      jedisPool = null;
+    }
+
+  }
+
+  public int getRedisPort() {
+    return redisPort;
+  }
+
+  public JedisPool getJedisPool() {
+    if (jedisPool != null) {
+      return jedisPool;
+    }
+
+    try {
+      final JedisPoolConfig poolConfig = buildPoolConfig();
+      jedisPool = new JedisPool(poolConfig, redisHost, redisPort);
+    } catch (Exception e) {
+      // We don't want to do anything for if cache initialization fails.
+      e.printStackTrace();
+    }
+
+    return jedisPool;
+
+  }
+
+  public void setJedisPool(JedisPool jedisPool) {
+    this.jedisPool = jedisPool;
+  }
+
+  private static JedisPoolConfig buildPoolConfig() {
+    final JedisPoolConfig poolConfig = new JedisPoolConfig();
+    poolConfig.setMaxTotal(128);
+    poolConfig.setMaxIdle(128);
+    poolConfig.setMinIdle(16);
+    poolConfig.setTestOnBorrow(true);
+    poolConfig.setTestOnReturn(true);
+    poolConfig.setTestWhileIdle(true);
+    poolConfig.setMinEvictableIdleTimeMillis(Duration.ofSeconds(60).toMillis());
+    poolConfig.setTimeBetweenEvictionRunsMillis(Duration.ofSeconds(30).toMillis());
+    poolConfig.setNumTestsPerEvictionRun(3);
+    poolConfig.setBlockWhenExhausted(true);
+    return poolConfig;
   }
 
 }
