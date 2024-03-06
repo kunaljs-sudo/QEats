@@ -17,13 +17,11 @@ public class RestaurantRepositoryServiceDummyImpl implements RestaurantRepositor
   private ObjectMapper objectMapper = new ObjectMapper();
 
   private List<Restaurant> loadRestaurantsDuringNormalHours() throws IOException {
-    String fixture =
-        FixtureHelpers.fixture(FIXTURES + "/normal_hours_list_of_restaurants.json");
+    String fixture = FixtureHelpers.fixture(FIXTURES + "/normal_hours_list_of_restaurants.json");
 
-    return objectMapper.readValue(fixture, new TypeReference<List<Restaurant>>() {
-    });
+    return objectMapper.readValue(fixture, new TypeReference<List<Restaurant>>() {});
   }
-  
+
 
   // TODO: CRIO_TASK_MODULE_RESTAURANTSAPI - Use this dummy implementation.
   // This function returns a list of restaurants in any lat/long of your choice randomly.
@@ -46,6 +44,27 @@ public class RestaurantRepositoryServiceDummyImpl implements RestaurantRepositor
     return restaurantList;
   }
 
+
+
+  public List<Restaurant> findRestaurantsByName(Double latitude, Double longitude,
+      String searchString, LocalTime currentTime, Double servingRadiusInKms) {
+    return null;
+  }
+
+  public List<Restaurant> findRestaurantsByAttributes(Double latitude, Double longitude,
+      String searchString, LocalTime currentTime, Double servingRadiusInKms) {
+    return null;
+  }
+
+  public List<Restaurant> findRestaurantsByItemName(Double latitude, Double longitude,
+      String searchString, LocalTime currentTime, Double servingRadiusInKms) {
+    return null;
+  }
+
+  public List<Restaurant> findRestaurantsByItemAttributes(Double latitude, Double longitude,
+      String searchString, LocalTime currentTime, Double servingRadiusInKms) {
+    return null;
+  }
 
 
 }

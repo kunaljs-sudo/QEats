@@ -14,7 +14,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface RestaurantRepository extends MongoRepository<RestaurantEntity, String> {
-  
+
   @Cacheable("findAllRestaurantEntity")
   List<RestaurantEntity> findAll();
 }

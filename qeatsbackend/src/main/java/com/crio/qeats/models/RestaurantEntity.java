@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright (c) Crio.Do 2019. All rights reserved
+ * * Copyright (c) Crio.Do 2019. All rights reserved
  *
  */
 
@@ -16,7 +16,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 // Java class that maps to Mongo collection.
 
 @Document(collection = "restaurants")
-public class RestaurantEntity implements Serializable{
+public class RestaurantEntity implements Serializable {
 
   @Id
   private String id;
@@ -49,7 +49,7 @@ public class RestaurantEntity implements Serializable{
   private List<String> attributes = new ArrayList<>();
 
 
-  
+
   public RestaurantEntity() {}
 
   public RestaurantEntity(String id, @NotNull String restaurantId, @NotNull String name,
@@ -148,7 +148,7 @@ public class RestaurantEntity implements Serializable{
     this.attributes = attributes;
   }
 
-  
+
 
 }
 

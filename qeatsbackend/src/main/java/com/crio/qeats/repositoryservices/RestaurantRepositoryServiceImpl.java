@@ -157,6 +157,55 @@ public class RestaurantRepositoryServiceImpl implements RestaurantRepositoryServ
 	}
 
 
+	// TODO: CRIO_TASK_MODULE_RESTAURANTSEARCH
+	// Objective:
+	// Find restaurants whose names have an exact or partial match with the search query.
+	@Override
+	public List<Restaurant> findRestaurantsByName(Double latitude, Double longitude,
+			String searchString, LocalTime currentTime, Double servingRadiusInKms) {
+
+
+		return null;
+	}
+
+
+	// TODO: CRIO_TASK_MODULE_RESTAURANTSEARCH
+	// Objective:
+	// Find restaurants whose attributes (cuisines) intersect with the search query.
+	@Override
+	public List<Restaurant> findRestaurantsByAttributes(Double latitude, Double longitude,
+			String searchString, LocalTime currentTime, Double servingRadiusInKms) {
+
+
+		return null;
+	}
+
+
+
+	// TODO: CRIO_TASK_MODULE_RESTAURANTSEARCH
+	// Objective:
+	// Find restaurants which serve food items whose names form a complete or partial match
+	// with the search query.
+
+	@Override
+	public List<Restaurant> findRestaurantsByItemName(Double latitude, Double longitude,
+			String searchString, LocalTime currentTime, Double servingRadiusInKms) {
+
+
+		return null;
+	}
+
+	// TODO: CRIO_TASK_MODULE_RESTAURANTSEARCH
+	// Objective:
+	// Find restaurants which serve food items whose attributes intersect with the search query.
+	@Override
+	public List<Restaurant> findRestaurantsByItemAttributes(Double latitude, Double longitude,
+			String searchString, LocalTime currentTime, Double servingRadiusInKms) {
+
+		return null;
+	}
+
+
 
 }
 
