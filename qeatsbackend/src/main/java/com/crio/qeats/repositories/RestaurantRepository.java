@@ -11,6 +11,7 @@ import java.util.Optional;
 import com.crio.qeats.models.RestaurantEntity;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -19,7 +20,8 @@ public interface RestaurantRepository extends MongoRepository<RestaurantEntity, 
   @Cacheable("findAllRestaurantEntity")
   List<RestaurantEntity> findAll();
 
-  Optional<List<RestaurantEntity>> findByName(String searchedFor);
+  @Query("{ 'name' : ?0 }")
+  Optional<List<RestaurantEntity>> findRestaurantsByNameExact(String searchedFor);
 
 }
 
