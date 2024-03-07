@@ -52,13 +52,12 @@ import org.springframework.test.context.ActiveProfiles;
 @ActiveProfiles("test")
 class RestaurantServiceTest {
 
-  private static final String FIXTURES = "fixture/exchanges";
+  private static final String FIXTURES = "fixtures/exchanges";
   @InjectMocks
   private RestaurantServiceImpl restaurantService;
   @MockBean
   private RestaurantRepositoryService restaurantRepositoryServiceMock;
   private ObjectMapper objectMapper;
-
 
   @BeforeEach
   void setup() {

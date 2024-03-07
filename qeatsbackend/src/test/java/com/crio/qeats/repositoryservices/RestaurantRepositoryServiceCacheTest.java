@@ -36,7 +36,7 @@ import org.springframework.test.context.ActiveProfiles;
 @ActiveProfiles("test")
 class RestaurantRepositoryServiceCacheTest {
 
-  private static final String FIXTURES = "fixture/exchanges";
+  private static final String FIXTURES = "fixtures/exchanges";
 
   @Autowired
   private RestaurantRepositoryService restaurantRepositoryService;

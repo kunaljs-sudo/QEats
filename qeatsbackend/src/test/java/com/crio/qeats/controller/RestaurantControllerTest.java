@@ -67,7 +67,7 @@ public class RestaurantControllerTest {
   private static final String POST_ORDER_API_URI = RESTAURANT_API_ENDPOINT + POST_ORDER_API;
   private static final String LIST_ORDERS_API_URI = RESTAURANT_API_ENDPOINT + GET_ORDERS_API;
 
-  private static final String FIXTURES = "fixture/exchanges";
+  private static final String FIXTURES = "fixtures/exchanges";
   private ObjectMapper objectMapper;
 
   private MockMvc mvc;

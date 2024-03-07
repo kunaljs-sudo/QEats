@@ -51,7 +51,7 @@ import redis.embedded.RedisServer;
 @ActiveProfiles("test")
 public class RestaurantRepositoryServiceTest {
 
-  private static final String FIXTURES = "fixture/exchanges";
+  private static final String FIXTURES = "fixtures/exchanges";
   List<RestaurantEntity> allRestaurants = new ArrayList<>();
   @Autowired
   private RestaurantRepositoryService restaurantRepositoryService;
@@ -64,7 +64,6 @@ public class RestaurantRepositoryServiceTest {
 
   @MockBean
   private RestaurantRepository restaurantRepository;
-
 
   @Value("${spring.redis.port}")
   private int redisPort;

@@ -23,67 +23,67 @@ import lombok.NonNull;
 
 public class GetRestaurantsRequest {
 
-	@NotNull
-	@NonNull
-	@Max(90)
-	@Min(-90)
-	private Double latitude;
+  @NotNull
+  @NonNull
+  @Max(90)
+  @Min(-90)
+  private Double latitude;
 
-	@NotNull
-	@NonNull
-	@Max(180)
-	@Min(-180)
-	private Double longitude;
+  @NotNull
+  @NonNull
+  @Max(180)
+  @Min(-180)
+  private Double longitude;
 
-	@JsonProperty(required = false)
-	private String searchFor;
+  @JsonProperty(required = false)
+  private String searchFor;
 
 
 
-	public GetRestaurantsRequest() {}
+  public GetRestaurantsRequest() {}
 
-	public GetRestaurantsRequest(@NotNull @NonNull @Max(90) @Min(-90) Double latitude,
-			@NotNull @NonNull @Max(180) @Min(-180) Double longitude) {
-		this.latitude = latitude;
-		this.longitude = longitude;
-	}
+  public GetRestaurantsRequest(@NotNull @NonNull @Max(90) @Min(-90) Double latitude,
+      @NotNull @NonNull @Max(180) @Min(-180) Double longitude) {
+    this.latitude = latitude;
+    this.longitude = longitude;
+  }
 
-	public GetRestaurantsRequest(@NotNull @NonNull @Max(90) @Min(-90) Double latitude,
-			@NotNull @NonNull @Max(180) @Min(-180) Double longitude, String searchFor) {
-		this.latitude = latitude;
-		this.longitude = longitude;
-		this.searchFor = searchFor;
-	}
+  public GetRestaurantsRequest(@NotNull @NonNull @Max(90) @Min(-90) Double latitude,
+      @NotNull @NonNull @Max(180) @Min(-180) Double longitude, String searchFor) {
+    this.latitude = latitude;
+    this.longitude = longitude;
+    this.searchFor = searchFor;
+  }
 
-	public Double getLatitude() {
-		return latitude;
-	}
+  public Double getLatitude() {
+    return latitude;
+  }
 
-	public void setLatitude(Double latitude) {
-		this.latitude = latitude;
-	}
+  public void setLatitude(Double latitude) {
+    this.latitude = latitude;
+  }
 
-	public Double getLongitude() {
-		return longitude;
-	}
+  public Double getLongitude() {
+    return longitude;
+  }
 
-	public void setLongitude(Double longitude) {
-		this.longitude = longitude;
-	}
+  public void setLongitude(Double longitude) {
+    this.longitude = longitude;
+  }
 
-	public String getSearchFor() {
-		return searchFor;
-	}
+  public String getSearchFor() {
+    return searchFor;
+  }
 
-	public void setSearchFor(String searchFor) {
-		this.searchFor = searchFor;
-	}
+  public void setSearchFor(String searchFor) {
+    this.searchFor = searchFor;
+  }
 
-	@Override
-	public String toString() {
-		return "GetRestaurantsRequest [latitude=" + latitude + ", longitude=" + longitude
-				+ ", searchFor=" + searchFor + "]";
-	}
+  @Override
+  public String toString() {
+    return "GetRestaurantsRequest [latitude=" + latitude + ", longitude=" + longitude
+        + ", searchFor=" + searchFor + "]";
+  }
 
 
 

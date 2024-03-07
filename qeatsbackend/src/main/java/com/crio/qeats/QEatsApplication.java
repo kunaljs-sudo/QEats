@@ -1,12 +1,14 @@
 
 /*
  *
- * * Copyright (c) Crio.Do 2019. All rights reserved
+ * <<<<<<< HEAD * Copyright (c) Crio.Do 2019. All rights reserved ======= * Copyright (c) Crio.Do
+ * 2019. All rights reserved >>>>>>> dc8b0d3b93ef671e8dec85fa0588a5d535f28259
  *
  */
 
 package com.crio.qeats;
 
+import com.crio.qeats.globals.GlobalConstants;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.SpringApplication;
