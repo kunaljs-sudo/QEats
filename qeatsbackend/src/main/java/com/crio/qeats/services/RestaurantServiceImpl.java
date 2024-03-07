@@ -11,9 +11,15 @@ import lombok.extern.log4j.Log4j2;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import com.crio.qeats.dto.Restaurant;
+import com.crio.qeats.exceptions.CustomQEatsException;
 import com.crio.qeats.exchanges.GetRestaurantsRequest;
 import com.crio.qeats.exchanges.GetRestaurantsResponse;
 import com.crio.qeats.repositoryservices.RestaurantRepositoryService;
@@ -96,33 +102,86 @@ public class RestaurantServiceImpl implements RestaurantService {
         || getRestaurantsRequest.getSearchFor().isEmpty()) {
       return findAllRestaurantsCloseBy(getRestaurantsRequest, currentTime);
     }
-    restaurantsByName = restaurantRepositoryService.findRestaurantsByName(
-        getRestaurantsRequest.getLatitude(), getRestaurantsRequest.getLongitude(),
-        getRestaurantsRequest.getSearchFor(), currentTime, servingRadius);
 
-    restaurantsByAttribute = restaurantRepositoryService.findRestaurantsByAttributes(
-        getRestaurantsRequest.getLatitude(), getRestaurantsRequest.getLongitude(),
-        getRestaurantsRequest.getSearchFor(), currentTime, servingRadius);
+    // going to use parallelly call all these methods to gettrespoonse faster
+    int threadPoolSize = Runtime.getRuntime().availableProcessors(); // Adjust the thread pool size
+    // based on your requirements
+    ExecutorService executorService = Executors.newFixedThreadPool(threadPoolSize);
 
-    restaurantsByItemName = restaurantRepositoryService.findRestaurantsByItemName(
+    // List of methods to run in parallel
+    List<Callable<List<Restaurant>>> tasks = new ArrayList<>();
+    tasks.add(() -> restaurantRepositoryService.findRestaurantsByName(
         getRestaurantsRequest.getLatitude(), getRestaurantsRequest.getLongitude(),
-        getRestaurantsRequest.getSearchFor(), currentTime, servingRadius);
+        getRestaurantsRequest.getSearchFor(), currentTime, servingRadius));
+    tasks.add(() -> restaurantRepositoryService.findRestaurantsByAttributes(
+        getRestaurantsRequest.getLatitude(), getRestaurantsRequest.getLongitude(),
+        getRestaurantsRequest.getSearchFor(), currentTime, servingRadius));
+    tasks.add(() -> restaurantRepositoryService.findRestaurantsByItemName(
+        getRestaurantsRequest.getLatitude(), getRestaurantsRequest.getLongitude(),
+        getRestaurantsRequest.getSearchFor(), currentTime, servingRadius));
+    tasks.add(() -> restaurantRepositoryService.findRestaurantsByItemAttributes(
+        getRestaurantsRequest.getLatitude(), getRestaurantsRequest.getLongitude(),
+        getRestaurantsRequest.getSearchFor(), currentTime, servingRadius));
 
-    restaurantsByItemAttribute = restaurantRepositoryService.findRestaurantsByItemAttributes(
-        getRestaurantsRequest.getLatitude(), getRestaurantsRequest.getLongitude(),
-        getRestaurantsRequest.getSearchFor(), currentTime, servingRadius);
+
 
     List<Restaurant> restaurants = new ArrayList<>();
 
-    restaurants = Stream
-        .of(restaurantsByName, restaurantsByAttribute, restaurantsByItemName,
-            restaurantsByItemAttribute)
-        .filter(list -> list != null && !list.isEmpty()).flatMap(List::stream)
-        // .peek(restaurant -> System.out.println("Before filtering: " + restaurant))
-        // .filter(restaurant -> (restaurant.getOpensAt() != null && restaurant.getClosesAt() !=
-        // null))
-        // .peek(restaurant -> System.out.println("After filtering: " + restaurant))
-        .collect(Collectors.toList());
+    // Invoke all tasks in parallel
+    List<Future<List<Restaurant>>> futures;
+    try {
+      futures = executorService.invokeAll(tasks);
+
+      // Collect results
+      List<List<Restaurant>> results = new ArrayList<>();
+      for (Future<List<Restaurant>> future : futures) {
+        results.add(future.get());
+      }
+      // Process the combined results as needed
+      restaurants = Stream.of(results.get(0), results.get(1), results.get(2), results.get(3))
+          .filter(list -> list != null && !list.isEmpty()).flatMap(List::stream)
+          .collect(Collectors.toList());
+
+    } catch (InterruptedException | ExecutionException e) {
+      log.error(e.getMessage());
+      throw new CustomQEatsException(e.getMessage());
+    }
+
+
+    // Shutdown the executor service
+    executorService.shutdown();
+
+
+
+    // Commenting earlier Work
+
+    // restaurantsByName = restaurantRepositoryService.findRestaurantsByName(
+    // getRestaurantsRequest.getLatitude(), getRestaurantsRequest.getLongitude(),
+    // getRestaurantsRequest.getSearchFor(), currentTime, servingRadius);
+
+    // restaurantsByAttribute = restaurantRepositoryService.findRestaurantsByAttributes(
+    // getRestaurantsRequest.getLatitude(), getRestaurantsRequest.getLongitude(),
+    // getRestaurantsRequest.getSearchFor(), currentTime, servingRadius);
+
+    // restaurantsByItemName = restaurantRepositoryService.findRestaurantsByItemName(
+    // getRestaurantsRequest.getLatitude(), getRestaurantsRequest.getLongitude(),
+    // getRestaurantsRequest.getSearchFor(), currentTime, servingRadius);
+
+    // restaurantsByItemAttribute = restaurantRepositoryService.findRestaurantsByItemAttributes(
+    // getRestaurantsRequest.getLatitude(), getRestaurantsRequest.getLongitude(),
+    // getRestaurantsRequest.getSearchFor(), currentTime, servingRadius);
+
+    // List<Restaurant> restaurants = new ArrayList<>();
+
+    // restaurants = Stream
+    // .of(restaurantsByName, restaurantsByAttribute, restaurantsByItemName,
+    // restaurantsByItemAttribute)
+    // .filter(list -> list != null && !list.isEmpty()).flatMap(List::stream)
+    // // .peek(restaurant -> System.out.println("Before filtering: " + restaurant))
+    // // .filter(restaurant -> (restaurant.getOpensAt() != null && restaurant.getClosesAt() !=
+    // // null))
+    // // .peek(restaurant -> System.out.println("After filtering: " + restaurant))
+    // .collect(Collectors.toList());
 
     for (Restaurant restaurant : restaurants) {
       String sanitizedName = restaurant.getName().replaceAll("[Â©éí]", "e");
