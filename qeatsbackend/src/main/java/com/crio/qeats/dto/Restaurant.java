@@ -10,6 +10,7 @@ package com.crio.qeats.dto;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 
 
 
@@ -32,130 +33,130 @@ import java.util.ArrayList;
 // }
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Restaurant implements Serializable{
-	private String restaurantId;
-	private String name;
-	private String city;
-	private String imageUrl;
-	private Double latitude;
-	private Double longitude;
-	private String opensAt;
-	private String closesAt;
-	private ArrayList<String> attributes;
+public class Restaurant implements Serializable {
+  private String restaurantId;
+  private String name;
+  private String city;
+  private String imageUrl;
+  private Double latitude;
+  private Double longitude;
+  private String opensAt;
+  private String closesAt;
+  private List<String> attributes;
 
-	public Restaurant() {}
-
-
-	public Restaurant(String restaurantId, String name, String city, String imageUrl, Double latitude,
-			Double longitude, String opensAt, String closesAt, ArrayList<String> attributes) {
-		this.restaurantId = restaurantId;
-		this.name = name;
-		this.city = city;
-		this.imageUrl = imageUrl;
-		this.latitude = latitude;
-		this.longitude = longitude;
-		this.opensAt = opensAt;
-		this.closesAt = closesAt;
-		this.attributes = attributes;
-	}
+  public Restaurant() {}
 
 
-	public String getRestaurantId() {
-		return restaurantId;
-	}
+  public Restaurant(String restaurantId, String name, String city, String imageUrl, Double latitude,
+      Double longitude, String opensAt, String closesAt, ArrayList<String> attributes) {
+    this.restaurantId = restaurantId;
+    this.name = name;
+    this.city = city;
+    this.imageUrl = imageUrl;
+    this.latitude = latitude;
+    this.longitude = longitude;
+    this.opensAt = opensAt;
+    this.closesAt = closesAt;
+    this.attributes = attributes;
+  }
 
 
-	public void setRestaurantId(String restaurantId) {
-		this.restaurantId = restaurantId;
-	}
+  public String getRestaurantId() {
+    return restaurantId;
+  }
 
 
-	public String getName() {
-		return name;
-	}
+  public void setRestaurantId(String restaurantId) {
+    this.restaurantId = restaurantId;
+  }
 
 
-	public void setName(String name) {
-		this.name = name;
-	}
+  public String getName() {
+    return name;
+  }
 
 
-	public String getCity() {
-		return city;
-	}
+  public void setName(String name) {
+    this.name = name;
+  }
 
 
-	public void setCity(String city) {
-		this.city = city;
-	}
+  public String getCity() {
+    return city;
+  }
 
 
-	public String getImageUrl() {
-		return imageUrl;
-	}
+  public void setCity(String city) {
+    this.city = city;
+  }
 
 
-	public void setImageUrl(String imageUrl) {
-		this.imageUrl = imageUrl;
-	}
+  public String getImageUrl() {
+    return imageUrl;
+  }
 
 
-	public Double getLatitude() {
-		return latitude;
-	}
+  public void setImageUrl(String imageUrl) {
+    this.imageUrl = imageUrl;
+  }
 
 
-	public void setLatitude(Double latitude) {
-		this.latitude = latitude;
-	}
+  public Double getLatitude() {
+    return latitude;
+  }
 
 
-	public Double getLongitude() {
-		return longitude;
-	}
+  public void setLatitude(Double latitude) {
+    this.latitude = latitude;
+  }
 
 
-	public void setLongitude(Double longitude) {
-		this.longitude = longitude;
-	}
+  public Double getLongitude() {
+    return longitude;
+  }
 
 
-	public String getOpensAt() {
-		return opensAt;
-	}
+  public void setLongitude(Double longitude) {
+    this.longitude = longitude;
+  }
 
 
-	public void setOpensAt(String opensAt) {
-		this.opensAt = opensAt;
-	}
+  public String getOpensAt() {
+    return opensAt;
+  }
 
 
-	public String getClosesAt() {
-		return closesAt;
-	}
+  public void setOpensAt(String opensAt) {
+    this.opensAt = opensAt;
+  }
 
 
-	public void setClosesAt(String closesAt) {
-		this.closesAt = closesAt;
-	}
+  public String getClosesAt() {
+    return closesAt;
+  }
 
 
-	public ArrayList<String> getAttributes() {
-		return attributes;
-	}
+  public void setClosesAt(String closesAt) {
+    this.closesAt = closesAt;
+  }
 
 
-	public void setAttributes(ArrayList<String> attributes) {
-		this.attributes = attributes;
-	}
+  public List<String> getAttributes() {
+    return attributes;
+  }
 
 
-	@Override
-	public String toString() {
-		return "Restaurant [restaurantId=" + restaurantId + ", name=" + name + ", city=" + city
-				+ ", imageUrl=" + imageUrl + ", latitude=" + latitude + ", longitude=" + longitude
-				+ ", opensAt=" + opensAt + ", closesAt=" + closesAt + ", attributes=" + attributes + "]";
-	}
+  public void setAttributes(List<String> attributes) {
+    this.attributes = attributes;
+  }
+
+
+  @Override
+  public String toString() {
+    return "Restaurant [restaurantId=" + restaurantId + ", name=" + name + ", city=" + city
+        + ", imageUrl=" + imageUrl + ", latitude=" + latitude + ", longitude=" + longitude
+        + ", opensAt=" + opensAt + ", closesAt=" + closesAt + ", attributes=" + attributes + "]";
+  }
 
 
 

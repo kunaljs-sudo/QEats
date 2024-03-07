@@ -1,12 +1,17 @@
 package com.crio.qeats.repositoryservices;
 
+import ch.hsr.geohash.GeoHash;
+import redis.clients.jedis.Jedis;
+import redis.embedded.RedisServer;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-
-import ch.hsr.geohash.GeoHash;
+import java.io.IOException;
+import java.time.LocalTime;
+import java.util.List;
+import javax.inject.Provider;
 import com.crio.qeats.QEatsApplication;
 import com.crio.qeats.configs.RedisConfiguration;
 import com.crio.qeats.dto.Restaurant;
@@ -15,12 +20,7 @@ import com.crio.qeats.repositories.RestaurantRepository;
 import com.crio.qeats.utils.FixtureHelpers;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.IOException;
-import java.time.LocalTime;
-import java.util.List;
-import javax.inject.Provider;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,15 +30,13 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
-import redis.clients.jedis.Jedis;
-import redis.embedded.RedisServer;
 
 @SpringBootTest(classes = {QEatsApplication.class})
 @DirtiesContext
 @ActiveProfiles("test")
 class RestaurantRepositoryServiceCacheTest {
 
-  private static final String FIXTURES = "fixtures/exchanges";
+  private static final String FIXTURES = "fixture/exchanges";
 
   @Autowired
   private RestaurantRepositoryService restaurantRepositoryService;
@@ -75,10 +73,10 @@ class RestaurantRepositoryServiceCacheTest {
     Jedis jedis = redisConfiguration.getJedisPool().getResource();
 
     // call it twice
-    List<Restaurant> allRestaurantsCloseBy = restaurantRepositoryService
-        .findAllRestaurantsCloseBy(20.0, 30.0, LocalTime.of(18, 1), 3.0);
-    allRestaurantsCloseBy = restaurantRepositoryService
-        .findAllRestaurantsCloseBy(20.0, 30.0, LocalTime.of(18, 1), 3.0);
+    List<Restaurant> allRestaurantsCloseBy =
+        restaurantRepositoryService.findAllRestaurantsCloseBy(20.0, 30.0, LocalTime.of(18, 1), 3.0);
+    allRestaurantsCloseBy =
+        restaurantRepositoryService.findAllRestaurantsCloseBy(20.0, 30.0, LocalTime.of(18, 1), 3.0);
     GeoHash geoHash = GeoHash.withCharacterPrecision(20.0, 30.0, 7);
 
     verify(mockRestaurantRepository, times(1)).findAll();
@@ -89,10 +87,8 @@ class RestaurantRepositoryServiceCacheTest {
   }
 
   private List<RestaurantEntity> listOfRestaurants() throws IOException {
-    String fixture =
-        FixtureHelpers.fixture(FIXTURES + "/initial_data_set_restaurants.json");
+    String fixture = FixtureHelpers.fixture(FIXTURES + "/initial_data_set_restaurants.json");
 
-    return objectMapper.readValue(fixture, new TypeReference<List<RestaurantEntity>>() {
-    });
+    return objectMapper.readValue(fixture, new TypeReference<List<RestaurantEntity>>() {});
   }
 }

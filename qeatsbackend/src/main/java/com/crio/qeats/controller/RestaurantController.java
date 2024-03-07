@@ -10,6 +10,7 @@ import com.crio.qeats.exchanges.GetRestaurantsRequest;
 import com.crio.qeats.exchanges.GetRestaurantsResponse;
 import com.crio.qeats.services.RestaurantService;
 import java.time.LocalTime;
+import java.util.List;
 import javax.validation.Valid;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,11 +52,15 @@ public class RestaurantController {
         && getRestaurantsRequest.getLatitude() >= -90 && getRestaurantsRequest.getLatitude() <= 90
         && getRestaurantsRequest.getLongitude() >= -180
         && getRestaurantsRequest.getLongitude() <= 180) {
-      // CHECKSTYLE:OFF
-      getRestaurantsResponse =
-          restaurantService.findAllRestaurantsCloseBy(getRestaurantsRequest, LocalTime.now());
-      // getRestaurantsResponse = restaurantService.findAllRestaurantsCloseBy(getRestaurantsRequest,
-      // LocalTime.of(10, 30));
+      if (getRestaurantsRequest.getSearchFor() != null
+          && !getRestaurantsRequest.getSearchFor().isEmpty()) {
+        getRestaurantsResponse =
+            restaurantService.findRestaurantsBySearchQuery(getRestaurantsRequest, LocalTime.now());
+      } else {
+        // CHECKSTYLE:OF
+        getRestaurantsResponse =
+            restaurantService.findAllRestaurantsCloseBy(getRestaurantsRequest, LocalTime.now());
+      }
       log.info("getRestaurants returned {}", getRestaurantsResponse);
       // CHECKSTYLE:ON
 
@@ -63,8 +68,6 @@ public class RestaurantController {
     }
 
     return ResponseEntity.badRequest().body(null);
-
-
 
   }
 

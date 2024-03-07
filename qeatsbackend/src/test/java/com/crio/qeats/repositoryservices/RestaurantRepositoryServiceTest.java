@@ -51,7 +51,7 @@ import redis.embedded.RedisServer;
 @ActiveProfiles("test")
 public class RestaurantRepositoryServiceTest {
 
-  private static final String FIXTURES = "fixtures/exchanges";
+  private static final String FIXTURES = "fixture/exchanges";
   List<RestaurantEntity> allRestaurants = new ArrayList<>();
   @Autowired
   private RestaurantRepositoryService restaurantRepositoryService;
@@ -174,8 +174,7 @@ public class RestaurantRepositoryServiceTest {
     assertNotNull(mongoTemplate);
     assertNotNull(restaurantRepositoryService);
 
-    doReturn(Optional.of(allRestaurants)).when(restaurantRepository)
-        .findRestaurantsByNameExact(any());
+    doReturn(Optional.of(allRestaurants)).when(restaurantRepository).findByName(any());
 
     String searchFor = "A2B";
     List<Restaurant> foundRestaurantsList = restaurantRepositoryService.findRestaurantsByName(20.8,
@@ -189,8 +188,7 @@ public class RestaurantRepositoryServiceTest {
     assertNotNull(mongoTemplate);
     assertNotNull(restaurantRepositoryService);
 
-    doReturn(Optional.of(allRestaurants)).when(restaurantRepository)
-        .findRestaurantsByNameExact(any());
+    doReturn(Optional.of(allRestaurants)).when(restaurantRepository).findByName(any());
     String searchFor = "A2B";
     List<Restaurant> foundRestaurantsList = restaurantRepositoryService.findRestaurantsByName(20.8,
         30.1, searchFor, LocalTime.of(20, 0), 5.0);

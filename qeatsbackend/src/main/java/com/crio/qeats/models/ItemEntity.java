@@ -1,6 +1,7 @@
 
 package com.crio.qeats.models;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import javax.validation.constraints.NotNull;
@@ -9,7 +10,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 
 @Document(collection = "items")
-public class ItemEntity {
+public class ItemEntity implements Serializable {
 
   @Id
   private String id;
@@ -30,7 +31,6 @@ public class ItemEntity {
   private List<String> attributes = new ArrayList<>();
 
 
-  
 
   public ItemEntity() {}
 
@@ -92,6 +92,6 @@ public class ItemEntity {
     this.attributes = attributes;
   }
 
-  
+
 
 }

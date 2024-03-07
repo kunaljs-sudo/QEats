@@ -31,8 +31,11 @@ import org.mockito.InjectMocks;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 
@@ -49,12 +52,13 @@ import org.springframework.test.context.ActiveProfiles;
 @ActiveProfiles("test")
 class RestaurantServiceTest {
 
-  private static final String FIXTURES = "fixtures/exchanges";
+  private static final String FIXTURES = "fixture/exchanges";
   @InjectMocks
   private RestaurantServiceImpl restaurantService;
   @MockBean
   private RestaurantRepositoryService restaurantRepositoryServiceMock;
   private ObjectMapper objectMapper;
+
 
   @BeforeEach
   void setup() {
@@ -62,6 +66,8 @@ class RestaurantServiceTest {
 
     objectMapper = new ObjectMapper();
   }
+
+
 
   private String getServingRadius(List<Restaurant> restaurants, LocalTime timeOfService) {
     when(restaurantRepositoryServiceMock.findAllRestaurantsCloseBy(any(Double.class),
@@ -111,8 +117,8 @@ class RestaurantServiceTest {
 
 
   private List<Restaurant> loadRestaurantsDuringNormalHours() throws IOException {
-    String fixture = FixtureHelpers.fixture(FIXTURES + "/normal_hours_list_of_restaurants.json");
 
+    String fixture = FixtureHelpers.fixture(FIXTURES + "/normal_hours_list_of_restaurants.json");
     return objectMapper.readValue(fixture, new TypeReference<List<Restaurant>>() {});
   }
 
@@ -139,7 +145,7 @@ class RestaurantServiceTest {
     when(restaurantRepositoryServiceMock.findRestaurantsByAttributes(any(Double.class),
         any(Double.class), any(String.class), any(LocalTime.class), any(Double.class)))
             .thenReturn(loadRestaurantsSearchedByAttributes());
-
+    System.out.println(loadRestaurantsDuringNormalHours().toString());
     GetRestaurantsRequest getRestaurantsRequest = new GetRestaurantsRequest(20.0, 30.0);
     getRestaurantsRequest.setSearchFor("Test");
 

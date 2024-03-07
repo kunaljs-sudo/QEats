@@ -8,6 +8,7 @@
 package com.crio.qeats.utils;
 
 import com.google.common.io.Resources;
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.Charset;

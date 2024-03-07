@@ -1,27 +1,22 @@
 
 /*
  *
- *  * Copyright (c) Crio.Do 2019. All rights reserved
+ * * Copyright (c) Crio.Do 2019. All rights reserved
  *
  */
 
 package com.crio.qeats.models;
 
-import com.crio.qeats.dto.Item;
-import java.util.ArrayList;
+import java.io.Serializable;
 import java.util.List;
 import javax.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.crio.qeats.dto.Item;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-@Data
+
 @Document(collection = "menus")
-@NoArgsConstructor
-@AllArgsConstructor
-public class MenuEntity {
+public class MenuEntity implements Serializable {
 
   @Id
   private String id;
@@ -30,6 +25,42 @@ public class MenuEntity {
   private String restaurantId;
 
   @NotNull
-  private List<Item> items = new ArrayList();
+  private List<Item> items;
+
+
+
+  public MenuEntity(String id, @NotNull String restaurantId, @NotNull List<Item> items) {
+    this.id = id;
+    this.restaurantId = restaurantId;
+    this.items = items;
+  }
+
+  public MenuEntity() {}
+
+  public String getId() {
+    return id;
+  }
+
+  public void setId(String id) {
+    this.id = id;
+  }
+
+  public String getRestaurantId() {
+    return restaurantId;
+  }
+
+  public void setRestaurantId(String restaurantId) {
+    this.restaurantId = restaurantId;
+  }
+
+  public List<Item> getItems() {
+    return items;
+  }
+
+  public void setItems(List<Item> items) {
+    this.items = items;
+  }
+
+
 
 }
