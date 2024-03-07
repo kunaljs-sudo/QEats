@@ -103,6 +103,72 @@ public class RestaurantServiceImpl implements RestaurantService {
       return findAllRestaurantsCloseBy(getRestaurantsRequest, currentTime);
     }
 
+
+
+    restaurantsByName = restaurantRepositoryService.findRestaurantsByName(
+        getRestaurantsRequest.getLatitude(), getRestaurantsRequest.getLongitude(),
+        getRestaurantsRequest.getSearchFor(), currentTime, servingRadius);
+
+    restaurantsByAttribute = restaurantRepositoryService.findRestaurantsByAttributes(
+        getRestaurantsRequest.getLatitude(), getRestaurantsRequest.getLongitude(),
+        getRestaurantsRequest.getSearchFor(), currentTime, servingRadius);
+
+    restaurantsByItemName = restaurantRepositoryService.findRestaurantsByItemName(
+        getRestaurantsRequest.getLatitude(), getRestaurantsRequest.getLongitude(),
+        getRestaurantsRequest.getSearchFor(), currentTime, servingRadius);
+
+    restaurantsByItemAttribute = restaurantRepositoryService.findRestaurantsByItemAttributes(
+        getRestaurantsRequest.getLatitude(), getRestaurantsRequest.getLongitude(),
+        getRestaurantsRequest.getSearchFor(), currentTime, servingRadius);
+
+    List<Restaurant> restaurants = new ArrayList<>();
+
+    restaurants = Stream
+        .of(restaurantsByName, restaurantsByAttribute, restaurantsByItemName,
+            restaurantsByItemAttribute)
+        .filter(list -> list != null && !list.isEmpty()).flatMap(List::stream)
+        .collect(Collectors.toList());
+
+    for (Restaurant restaurant : restaurants) {
+      String sanitizedName = restaurant.getName().replaceAll("[Â©éí]", "e");
+      restaurant.setName(sanitizedName);
+    }
+
+    GetRestaurantsResponse getRestaurantsResponse = new GetRestaurantsResponse(restaurants);
+    log.info(getRestaurantsResponse);
+
+    return getRestaurantsResponse;
+  }
+
+
+
+  // TODO: CRIO_TASK_MODULE_MULTITHREADING
+  // Implement multi-threaded version of RestaurantSearch.
+  // Implement variant of findRestaurantsBySearchQuery which is at least 1.5x time faster than
+  // findRestaurantsBySearchQuery.
+  @Override
+  public GetRestaurantsResponse findRestaurantsBySearchQueryMt(
+      GetRestaurantsRequest getRestaurantsRequest, LocalTime currentTime) {
+    int h = currentTime.getHour();
+    int m = currentTime.getMinute();
+
+    // List<Restaurant> restaurantsByName;
+    // List<Restaurant> restaurantsByAttribute;
+    // List<Restaurant> restaurantsByItemName;
+    // List<Restaurant> restaurantsByItemAttribute;
+
+    Double servingRadius;
+    if ((h >= 8 && h <= 9) || (h == 10 && m == 0) || (h == 13) || (h == 14 && m == 0)
+        || (h >= 19 && h < 21) || (h == 21 && m == 0)) {
+      servingRadius = peakHoursServingRadiusInKms;
+    } else {
+      servingRadius = normalHoursServingRadiusInKms;
+    }
+    if (getRestaurantsRequest.getSearchFor() == null
+        || getRestaurantsRequest.getSearchFor().isEmpty()) {
+      return findAllRestaurantsCloseBy(getRestaurantsRequest, currentTime);
+    }
+
     // going to use parallelly call all these methods to gettrespoonse faster
     int threadPoolSize = Runtime.getRuntime().availableProcessors(); // Adjust the thread pool size
     // based on your requirements
@@ -138,50 +204,21 @@ public class RestaurantServiceImpl implements RestaurantService {
         results.add(future.get());
       }
       // Process the combined results as needed
-      restaurants = Stream.of(results.get(0), results.get(1), results.get(2), results.get(3))
-          .filter(list -> list != null && !list.isEmpty()).flatMap(List::stream)
-          .collect(Collectors.toList());
+      if (results.size() == 4) {
+        restaurants = Stream.of(results.get(0), results.get(1), results.get(2), results.get(3))
+            .filter(list -> list != null && !list.isEmpty()).flatMap(List::stream)
+            .collect(Collectors.toList());
+      }
 
     } catch (InterruptedException | ExecutionException e) {
       log.error(e.getMessage());
       throw new CustomQEatsException(e.getMessage());
+    } finally {
+      // Shutdown the executor service
+      executorService.shutdown();
     }
 
 
-    // Shutdown the executor service
-    executorService.shutdown();
-
-
-
-    // Commenting earlier Work
-
-    // restaurantsByName = restaurantRepositoryService.findRestaurantsByName(
-    // getRestaurantsRequest.getLatitude(), getRestaurantsRequest.getLongitude(),
-    // getRestaurantsRequest.getSearchFor(), currentTime, servingRadius);
-
-    // restaurantsByAttribute = restaurantRepositoryService.findRestaurantsByAttributes(
-    // getRestaurantsRequest.getLatitude(), getRestaurantsRequest.getLongitude(),
-    // getRestaurantsRequest.getSearchFor(), currentTime, servingRadius);
-
-    // restaurantsByItemName = restaurantRepositoryService.findRestaurantsByItemName(
-    // getRestaurantsRequest.getLatitude(), getRestaurantsRequest.getLongitude(),
-    // getRestaurantsRequest.getSearchFor(), currentTime, servingRadius);
-
-    // restaurantsByItemAttribute = restaurantRepositoryService.findRestaurantsByItemAttributes(
-    // getRestaurantsRequest.getLatitude(), getRestaurantsRequest.getLongitude(),
-    // getRestaurantsRequest.getSearchFor(), currentTime, servingRadius);
-
-    // List<Restaurant> restaurants = new ArrayList<>();
-
-    // restaurants = Stream
-    // .of(restaurantsByName, restaurantsByAttribute, restaurantsByItemName,
-    // restaurantsByItemAttribute)
-    // .filter(list -> list != null && !list.isEmpty()).flatMap(List::stream)
-    // // .peek(restaurant -> System.out.println("Before filtering: " + restaurant))
-    // // .filter(restaurant -> (restaurant.getOpensAt() != null && restaurant.getClosesAt() !=
-    // // null))
-    // // .peek(restaurant -> System.out.println("After filtering: " + restaurant))
-    // .collect(Collectors.toList());
 
     for (Restaurant restaurant : restaurants) {
       String sanitizedName = restaurant.getName().replaceAll("[Â©éí]", "e");
@@ -192,19 +229,7 @@ public class RestaurantServiceImpl implements RestaurantService {
     log.info(getRestaurantsResponse);
 
     return getRestaurantsResponse;
-  }
 
-
-
-  // TODO: CRIO_TASK_MODULE_MULTITHREADING
-  // Implement multi-threaded version of RestaurantSearch.
-  // Implement variant of findRestaurantsBySearchQuery which is at least 1.5x time faster than
-  // findRestaurantsBySearchQuery.
-  @Override
-  public GetRestaurantsResponse findRestaurantsBySearchQueryMt(
-      GetRestaurantsRequest getRestaurantsRequest, LocalTime currentTime) {
-
-    return null;
   }
 }
 
